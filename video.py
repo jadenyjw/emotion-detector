@@ -41,7 +41,7 @@ parser.add_argument('camera', type=str, help='The IP address of the remote camer
 args = parser.parse_args()
 
 def format_image(image):
-  image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+  image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
   image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
   faces = cv2.CascadeClassifier("haarcascade_frontalface_default.xml").detectMultiScale(
       image,
@@ -126,7 +126,6 @@ class Player(Tk.Frame):
             self.player.video_take_snapshot(0, "picture.png", 0, 0)
             time.sleep(1)
             img = scipy.misc.imread("picture.png")
-            print(format_image(img))
             if format_image(img) != None:
                 prediction = model.predict(format_image(img).astype('float32'))
                 print(prediction)
@@ -135,7 +134,21 @@ class Player(Tk.Frame):
                     if prediction[0][i] > max:
                         max = prediction[0][i]
                         maxIndex = i
-                print(maxIndex)
+                if maxIndex == 0:
+                    print("Angry")
+                elif maxIndex == 1:
+                    print("Disgust")
+                elif maxIndex == 2:
+                    print("Fear")
+                elif maxIndex == 3:
+                    print("Happy")
+                elif maxIndex == 4:
+                    print("Sad")
+                elif maxIndex == 5:
+                    print("Surprised")
+                elif maxIndex == 6:
+                    print("Neutral")
+
 
 
     def GetHandle(self):

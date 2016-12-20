@@ -27,7 +27,7 @@ parser.add_argument('image', type=str, help='The image image file to check')
 args = parser.parse_args()
 
 def format_image(image):
-  image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+  image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
   image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
   faces = cv2.CascadeClassifier("haarcascade_frontalface_default.xml").detectMultiScale(
       image,
@@ -88,7 +88,7 @@ network = regression(network, optimizer='momentum',
                      loss='categorical_crossentropy')
 model = tflearn.DNN(network, tensorboard_verbose=0)
 
-model.load("/home/jaden/tensorflow/emotion/emotion.tfl")
+model.load("emotion.tfl")
 
 img = scipy.misc.imread(args.image)
 

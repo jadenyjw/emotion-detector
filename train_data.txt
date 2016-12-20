@@ -28599,7 +28599,6 @@ data_new/training/28598.png 3
 data_new/training/28599.png 1
 data_new/training/28600.png 6
 data_new/training/28601.png 3
-data_new/training/28602.png 0
 data_new/training/28603.png 6
 data_new/training/28604.png 5
 data_new/training/28605.png 0

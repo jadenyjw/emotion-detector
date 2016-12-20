@@ -13,13 +13,14 @@ import h5py
 training_file = 'train_data.txt'
 validation_file = 'cval_data.txt'
 
-build_hdf5_image_dataset(training_file, image_shape=[48, 48, 3], mode='file', output_path='dataset.h5', categorical_labels=True)
+
+#build_hdf5_image_dataset(training_file, image_shape=[48, 48, 3], mode='file', output_path='dataset.h5', categorical_labels=True)
 
 h5f = h5py.File('dataset.h5', 'r')
 X = h5f['X']
 Y = h5f['Y']
 
-build_hdf5_image_dataset(validation_file, image_shape=[48, 48, 3], mode='file', output_path='validation.h5', categorical_labels=True)
+#build_hdf5_image_dataset(validation_file, image_shape=[48, 48, 3], mode='file', output_path='validation.h5', categorical_labels=True)
 
 h5f = h5py.File('validation.h5', 'r')
 X_val = h5f['X']
@@ -36,7 +37,7 @@ img_aug.add_random_rotation(max_angle=25.)
 img_aug.add_random_blur(sigma_max=3.)
 network = input_data(shape=[None, 48, 48, 3], data_preprocessing=img_prep, data_augmentation=img_aug)
 network = conv_2d(network, nb_filter= 64, filter_size= [5, 5], activation='relu')
-network = local_response_normalization(network)
+#network = local_response_normalization(network)
 network = max_pool_2d(network, kernel_size=[3, 3], strides=2)
 network = conv_2d(network, nb_filter= 64, filter_size= [5, 5],  activation='relu')
 network = max_pool_2d(network, kernel_size=[3, 3], strides=2)
@@ -47,7 +48,7 @@ network = fully_connected(network, 7, activation ='softmax')
 network = regression(network, optimizer='momentum',
                      loss='categorical_crossentropy')
 model = tflearn.DNN(network, tensorboard_verbose=0)
-model.fit(X, Y, n_epoch=100, shuffle=True, validation_set=(X_val, Y_val),
+model.fit(X, Y, n_epoch=60, shuffle=True, validation_set=(X_val, Y_val),
           show_metric=True, batch_size=50,
           snapshot_epoch=True,
           run_id='emotionv2')
