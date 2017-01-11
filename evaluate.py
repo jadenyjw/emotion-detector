@@ -27,7 +27,7 @@ parser.add_argument('image', type=str, help='The image image file to check')
 args = parser.parse_args()
 
 def format_image(image):
-  image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+  image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
   image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
   faces = cv2.CascadeClassifier("haarcascade_frontalface_default.xml").detectMultiScale(
       image,
@@ -45,12 +45,6 @@ def format_image(image):
   face = max_area_face
   image = image[face[1]:(face[1] + face[2]), face[0]:(face[0] + face[3])]
   image = scipy.misc.imresize(image, [48, 48])
-  from matplotlib import pyplot as plt
-  matplotlib.use("TkAgg")
-
-  plt.imshow(image, interpolation='nearest')
-  plt.show()
-
 
   image = np.reshape(image, [-1, 48, 48, 3])
   return image
@@ -74,6 +68,7 @@ img_aug.add_random_rotation(max_angle=25.)
 img_aug.add_random_blur(sigma_max=3.)
 
 network = input_data(shape=[None, 48, 48, 3], data_preprocessing=img_prep, data_augmentation=img_aug)
+scipy.misc.imsave(arr=network, name="lmao.png")
 network = conv_2d(network, nb_filter= 64, filter_size= [5, 5], activation='relu')
 network = local_response_normalization(network)
 network = max_pool_2d(network, kernel_size=[3, 3], strides=2)
@@ -91,12 +86,25 @@ model = tflearn.DNN(network, tensorboard_verbose=0)
 model.load("emotion.tfl")
 
 img = scipy.misc.imread(args.image)
-
-prediction = model.predict(format_image(img).astype('float32'))
-print(prediction)
-max = 0.
-for i in range(len(prediction[0])):
-    if prediction[0][i] > max:
-        max = prediction[0][i]
-        maxIndex = i
-print(maxIndex)
+if format_image(img) != None:
+    prediction = model.predict(format_image(img).astype('float32'))
+    print(prediction)
+    max = 0.
+    for i in range(len(prediction[0])):
+        if prediction[0][i] > max:
+            max = prediction[0][i]
+            maxIndex = i
+    if maxIndex == 0:
+        print("Angry")
+    elif maxIndex == 1:
+        print("Disgust")
+    elif maxIndex == 2:
+        print("Fear")
+    elif maxIndex == 3:
+        print("Happy")
+    elif maxIndex == 4:
+        print("Sad")
+    elif maxIndex == 5:
+        print("Surprised")
+    elif maxIndex == 6:
+        print("Neutral")

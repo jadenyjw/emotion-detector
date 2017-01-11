@@ -41,7 +41,7 @@ parser.add_argument('camera', type=str, help='The IP address of the remote camer
 args = parser.parse_args()
 
 def format_image(image):
-  image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+  image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
   image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
   faces = cv2.CascadeClassifier("haarcascade_frontalface_default.xml").detectMultiScale(
       image,

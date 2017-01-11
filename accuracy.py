@@ -10,6 +10,7 @@ from tflearn.data_utils import build_hdf5_image_dataset
 from tflearn.layers.normalization import local_response_normalization
 import h5py
 import matplotlib
+import numpy as np
 
 
 h5f = h5py.File('accuracy.h5', 'r')
@@ -23,6 +24,7 @@ img_aug = ImageAugmentation()
 img_aug.add_random_flip_leftright()
 img_aug.add_random_rotation(max_angle=25.)
 img_aug.add_random_blur(sigma_max=3.)
+
 network = input_data(shape=[None, 48, 48, 3])
 network = conv_2d(network, nb_filter= 64, filter_size= [5, 5], activation='relu')
 network = local_response_normalization(network)
@@ -37,6 +39,7 @@ network = regression(network, optimizer='momentum',
                      loss='categorical_crossentropy')
 model = tflearn.DNN(network, tensorboard_verbose=0)
 model.load("/home/jaden/tensorflow/emotion/emotion.tfl")
+
 '''
 print(len(X))
 print(X[0])
@@ -46,10 +49,14 @@ matplotlib.use("TkAgg")
 plt.imshow(X[0], interpolation='nearest')
 plt.show()
 '''
-print(Y[0])
-count = 0
-for i in range(len(X)):
 
+
+
+confusion = np.zeros([7,7], 'int')
+
+count = 0
+for i in range(0,5):
+    print(Y[i])
     prediction = model.predict(X[i].reshape(-1,48,48,3))
     #print(prediction)
     max = 0.
@@ -63,7 +70,11 @@ for i in range(len(X)):
         if Y[i][c] == 1:
             maxYIndex = c
 
-
     if maxIndex == maxYIndex:
         count += 1
+
+    print(maxIndex)
+    confusion[maxYIndex][maxIndex] += 1
+
+print(confusion)
 print(str(count) + '/' + str(len(X)))
